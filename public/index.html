@@ -556,7 +556,18 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',
 
 <script>
 'use strict';
-const CFG = { clientId:'5eb393ee95fab7468a79d189', maintenance:false, showDebug:false, servers:['studyuk.site','deltastudy.site'], activeServer:0 };
+const CFG = {
+  clientId:'5eb393ee95fab7468a79d189',
+  maintenance: false,
+  showDebug: true,
+  // Server availability — set false if server is permanently down
+  serverAvailable: [true, true],
+  servers: ['studyuk.site','deltastudy.site'],
+  serverNames: ['SDV','Delta'],
+  // Set false to mark server unavailable — user will see alert on switch
+  serverAvailable: [true, true],
+  activeServer: 0,
+};
 const S = {
   token: localStorage.getItem('pw_token')||null,
   mobile: localStorage.getItem('pw_mobile')||'',
@@ -953,6 +964,7 @@ async function playLive(id,title){
 // ── INIT ──
 window.addEventListener('load',()=>{
   log('PW Player ready','success');if(CFG.showDebug)document.getElementById('debugFab').style.display='flex';
+  updateSrvUI();
   if(CFG.maintenance){
     document.body.innerHTML=`<div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center;background:#0d0d0d;color:#f0f0f0;font-family:Inter,sans-serif">
       <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="1.5" style="width:52px;height:52px"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
