@@ -255,7 +255,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',
 .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:inline-block;vertical-align:middle}
 
 @keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.srv-pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bdr2);border-radius:20px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;color:var(--txt2);flex-shrink:0;transition:all .15s}.srv-pill:active{border-color:var(--acc);color:var(--acc)}.srv-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex-shrink:0}
+
 @keyframes rot{to{transform:rotate(360deg)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 </style>
@@ -349,7 +349,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',
 <div class="page base" id="pgHome">
   <div class="tb">
     <div class="tb-title">Physics Wallah</div>
-    <div class="srv-pill" id="srvPill" onclick="switchServer()"><div class="srv-dot" id="srvDot"></div><span id="srvName">SDV</span></div><div class="ib" onclick="openSheet()" style="border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none">
+    <div class="ib" onclick="openSheet()" style="border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" style="width:17px;height:17px"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
   </div>
@@ -557,16 +557,10 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',
 <script>
 'use strict';
 const CFG = {
-  clientId:'5eb393ee95fab7468a79d189',
+  clientId: '5eb393ee95fab7468a79d189',
   maintenance: false,
-  showDebug: true,
-  // Server availability — set false if server is permanently down
-  serverAvailable: [true, true],
-  servers: ['studyuk.site','deltastudy.site'],
-  serverNames: ['SDV','Delta'],
-  // Set false to mark server unavailable — user will see alert on switch
-  serverAvailable: [true, true],
-  activeServer: 0,
+  showDebug: false,  // true = debug 🐛 button visible
+  base: 'studyuk.site',
 };
 const S = {
   token: localStorage.getItem('pw_token')||null,
@@ -599,7 +593,7 @@ function emptyEl(id,h,p){const g=document.getElementById(id);if(g)g.innerHTML=`<
 
 // ── API ──
 async function api(url,opts={}){
-  const PROXY=['studyuk.site','deltastudy.site','api.penpencil.co','videos.penpencil.co','cloudfront.net','akamaized.net','pw.live'];
+  const PROXY=['studyuk.site','api.penpencil.co','videos.penpencil.co','cloudfront.net','akamaized.net','pw.live'];
   const final=PROXY.some(d=>url.includes(d))?`/api/proxy?url=${encodeURIComponent(url)}`:url;
   const hds={'Accept':'application/json','client-id':CFG.clientId,'user-agent':'Android',...(opts.headers||{})};
   if(S.token)hds['Authorization']=`Bearer ${S.token}`;
@@ -964,7 +958,6 @@ async function playLive(id,title){
 // ── INIT ──
 window.addEventListener('load',()=>{
   log('PW Player ready','success');if(CFG.showDebug)document.getElementById('debugFab').style.display='flex';
-  updateSrvUI();
   if(CFG.maintenance){
     document.body.innerHTML=`<div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center;background:#0d0d0d;color:#f0f0f0;font-family:Inter,sans-serif">
       <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="1.5" style="width:52px;height:52px"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
