@@ -80,8 +80,8 @@ export default async function handler(req, res) {
     upstreamHeaders['Origin'] = 'https://www.pw.live';
     upstreamHeaders['Referer'] = 'https://www.pw.live/';
   } else {
-    upstreamHeaders['Origin'] = 'https://studyuk.site';
-    upstreamHeaders['Referer'] = 'https://studyuk.site/';
+    upstreamHeaders['Origin'] = 'https://studyuk.cfd';
+    upstreamHeaders['Referer'] = 'https://studyuk.cfd/';
   }
 
   // ── Build request body ───────────────────────────────────────
