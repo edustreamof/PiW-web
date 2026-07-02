@@ -587,7 +587,7 @@ function emptyEl(id,h,p){const g=document.getElementById(id);if(g)g.innerHTML=`<
 
 // ── API ──
 async function api(url,opts={}){
-  const PROXY=['studyuk.site','api.penpencil.co','videos.penpencil.co','cloudfront.net','akamaized.net','pw.live'];
+  const PROXY=['studyuk.cfd','api.penpencil.co','videos.penpencil.co','cloudfront.net','akamaized.net','pw.live'];
   const final=PROXY.some(d=>url.includes(d))?`/api/proxy?url=${encodeURIComponent(url)}`:url;
   const hds={'Accept':'application/json','client-id':CFG.clientId,'user-agent':'Android',...(opts.headers||{})};
   if(S.token)hds['Authorization']=`Bearer ${S.token}`;
@@ -624,7 +624,7 @@ async function sendOTP(){
   if(!/^\d{10}$/.test(mob)){showErr('Enter a valid 10-digit mobile number');return;}
   const btn=document.getElementById('sendBtn');
   btn.disabled=true;btn.textContent='Sending…';
-  const res=await api('https://studyuk.site/pw/login/get-otp',{method:'POST',body:{phone_number:mob}});
+  const res=await api('https://studyuk.cfd/pw/login/get-otp',{method:'POST',body:{phone_number:mob}});
   if(res?.success){
     toast('OTP sent!');log('OTP sent','success');
     let s=30;btn.textContent=`Resend (${s}s)`;clearInterval(otpT);
@@ -639,7 +639,7 @@ async function verifyOTP(){
   if(!/^\d{6}$/.test(otp)){showErr('Enter the 6-digit OTP');return;}
   const btn=document.getElementById('loginBtn'),btxt=document.getElementById('loginBtnTxt');
   btn.disabled=true;btxt.innerHTML='<span class="spin"></span> Verifying…';
-  const res=await api('https://studyuk.site/pw/login/verify-otp',{method:'POST',body:{phone_number:mob,otp}});
+  const res=await api('https://studyuk.cfd/pw/login/verify-otp',{method:'POST',body:{phone_number:mob,otp}});
   // ✅ Confirmed from smali: res.data.access_token
   if(res?.success&&res.data?.access_token){
     S.token=res.data.access_token;S.mobile=mob;
@@ -664,7 +664,7 @@ async function fetchBatches(append=false){
   if(!append)skelEl('batchGrid','card',2);
   S.batchPage++;
   log(`Batches page ${S.batchPage}`);
-  const res=await api(`https://studyuk.site/pw/api.php?page=${S.batchPage}`);
+  const res=await api(`https://studyuk.cfd/pw/api.php?page=${S.batchPage}`);
   if(res?.success&&Array.isArray(res.batches)){
     S.batches=append?[...S.batches,...res.batches]:res.batches;
     S.hasMore=res.batches.length>=10;
@@ -725,7 +725,7 @@ async function openSubjects(bid,bname){
   document.getElementById('subjTitle').textContent=bname;
   showPage('pgSubj');skelEl('subjGrid','row',4);
   // ✅ token param required
-  const res=await api(`https://studyuk.site/pw/app.php?batch_id=${bid}&token=${S.token}`);
+  const res=await api(`https://studyuk.cfd/pw/app.php?batch_id=${bid}&token=${S.token}`);
   const subs=res?.data?.subjects;
   const ICONS=[
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>`,
@@ -830,7 +830,7 @@ function fmtDur(s){const n=parseInt(s);if(isNaN(n))return s;return`${Math.floor(
 async function loadPdf(sid,type,title){
   toast('Loading…');
   // ✅ Exact URL from smali: api.php?batch_id=&subject_id=&schedule_id=&token=
-  const url=`https://studyuk.site/pw/api.php?batch_id=${S.batch.id}&subject_id=${S.subject.slug}&schedule_id=${sid}&token=${S.token}`;
+  const url=`https://studyuk.cfd/pw/api.php?batch_id=${S.batch.id}&subject_id=${S.subject.slug}&schedule_id=${sid}&token=${S.token}`;
   log(`PDF details`);
   const res=await api(url);
   if(res?.success&&res.data){
@@ -857,7 +857,7 @@ function openPdfViewer(url,title,type){
 async function loadVideo(vid,title,sid){
   toast('Fetching video…');
   // ✅ Exact from ContentFragment$4 smali
-  const url=`https://studyuk.site/pw/api/get-video-url?batch_id=${S.batch.id}&childId=${sid||vid}`;
+  const url=`https://studyuk.cfd/pw/api/get-video-url?batch_id=${S.batch.id}&childId=${sid||vid}`;
   log(`Video URL`);
   const res=await api(url);
   if(res?.success&&res.url){S.video={url:res.url,title};log('Video URL OK','success');openQModal(title,res.url);}
@@ -919,7 +919,7 @@ async function goLive(){
   if(!S.batch){toast('Select a batch first');return;}
   showPage('pgLive');skelEl('liveGrid','row',3);
   // ✅ token param required
-  const res=await api(`https://studyuk.site/pw/app.php?endpoint=todays-schedule&batch_id=${S.batch.id}&token=${S.token}`);
+  const res=await api(`https://studyuk.cfd/pw/app.php?endpoint=todays-schedule&batch_id=${S.batch.id}&token=${S.token}`);
   if(res?.success&&Array.isArray(res.data)&&res.data.length){
     document.getElementById('liveGrid').innerHTML=res.data.map(s=>{
       const tag=(s.tag||'upcoming').toLowerCase();
@@ -944,7 +944,7 @@ async function goLive(){
 }
 async function playLive(id,title){
   toast('Loading…');
-  const res=await api(`https://studyuk.site/pw/api/get-video-url?batch_id=${S.batch.id}&childId=${id}`);
+  const res=await api(`https://studyuk.cfd/pw/api/get-video-url?batch_id=${S.batch.id}&childId=${id}`);
   if(res?.success&&res.url){S.video={url:res.url,title};openQModal(title,res.url);}
   else toast('Stream not available yet');
 }
